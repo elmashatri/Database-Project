@@ -1,0 +1,50 @@
+/*1Listoni të gjithë lexuesit që janë nga qyteti i Prishtinës.*/
+Select L.emri
+From lexuesit L
+Where L.vendbanimi='Prishtinë';
+
+
+/* 2.Cilët lexues (Emri dhe Mbiemri) kanë huazuar të paktën dy libra gjatë vitit 2020? */
+Select h.lexuesi
+From huazimi h
+Where(h.viti=2020)
+GROUP BY h.lexuesi
+HAVING COUNT(*) >= 2;
+
+
+/*3Listoni lexuesit që kanë vonuar kthimin e librit në afatin 15 ditësh për vitin 2020 ose 2021 */
+Select H.lexuesi 
+From huazimi H
+Where (H.viti=2020 or H.viti=2021 AND H.verejtje='Me vonesë');
+
+
+/*4 Listoni ID-te dhe titullin e librave qe ne vitin 2019 ose 2020 jane
+huazur se paku nje here kurse ne vitin 2021 asnjehere . */
+select	h.libri
+from huazimi h
+where (h.data_e_leshimit>=2019-01-01 or h.data_e_leshimit<=2020-12-31)
+and!(h.data_e_leshimit=2021);
+
+/*5. Listoni top 5 lexuesit me numrin me te madh te huazimeve ne 3
+muajt e fundit. Lista te paraqes te dhenat e lexusit duke perfshire*/
+select l.emri, l.Mbiemri, l.idle
+from lexuesit l inner join huazimi h
+where DATE_ADD(h.data_e_leshimit,INTERVAL 90 DAY  ) LIMIT 5;
+
+/**6. Gjeni shumen e fituar nga te gjitha anetaresimet, te ndare ne vite**/
+select SUM(l.cmimi) as shuma,l.v_regj as viti
+from detajet_e_lexuesit l where (l.v_regj=2019 ) UNION select SUM(l.cmimi) as shuma,l.v_regj as viti
+from detajet_e_lexuesit l where (l.v_regj=2020 ) union select SUM(l.cmimi) as shuma,l.v_regj as viti
+from detajet_e_lexuesit l where (l.v_regj=2021 );
+
+
+
+/*8. Gjeni top librin me te lexuar per vitin aktual.*/
+SELECT MAX(s.nrshitjeve) as Toplibri, s.titulli
+from statistika s;
+
+
+
+/**9. Cili eshte autori me i preferuar nga lexuesit?**/
+SELECT MAX(a.nr_huazimeve) as TopAutori, a.emri,a.mbiemri
+from autorët a;
